@@ -21,8 +21,4 @@ def data_generator(file_paths,batch_size=1,fast=False):
         yield batch
 
 
-files=get_pickle()
-
-gen=data_generator(files,1)
-batch=next(gen)
 
