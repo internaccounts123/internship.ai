@@ -8,7 +8,7 @@ def create_batch(file_paths,batch_size,batch_index):
                 batch.append(list(pickle.load(f)))
     return batch        
 
-def data_generator(file_paths,batch_size=1,fast=False):
+def data_generator(file_paths,batch_size=1):
     #file_paths contains the absolute paths of all the files we need to convert and save
     #batch_size tells us how many files to load and save in a single go(depends upon the size of RAM)
     
