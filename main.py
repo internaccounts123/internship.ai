@@ -1,6 +1,7 @@
-import os 
+import os
+import sys
 
-def main(save_type=='csv'):
+def main(save_type='csv'):
     dir_path = os.path.dirname(os.path.realpath(__file__))
     #get paths of all the pkl files 
     paths=get_pkl(directory = dir_path, max_depth=-1)
@@ -11,7 +12,10 @@ def main(save_type=='csv'):
         dataframe=conv_to_pd_dataframe(batch)
         #save each batch
         save(dataframe,save_type)
-    print (dir_path)
+    print (dir_path,save_type)
   
 if __name__=="__main__":
-    main()
+    if len(sys.argv)>1:
+        main(sys.argv[1])
+    else:
+        main()
