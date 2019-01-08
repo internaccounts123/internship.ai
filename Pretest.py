@@ -3,6 +3,62 @@ import sys
 import pickle
 import numpy as np
 import pandas as pd
+import csv
+
+
+
+def get_pkl(directory = "", max_depth=-1, loadingType='.pkl'):
+    """ 
+	@Author: Salman Ahmed
+
+    	Recursively iterate over all nested directories and get paths of PKL files in directory and sub-directories.
+        directory is PATH from where it will get all paths.
+        max_depth is depth limit given as argument to how much deep we want to go.
+        max_depth = -1 means till end.
+    """
+    lists = [] #List containing all paths 
+    
+    if max_depth==0: #Terminating condition for depth 
+        return []
+    
+    lstDir = os.listdir(directory) #Getting all files and directories in given directory
+    
+    for each in lstDir: #Iterating over each file or directory in list
+        
+        checkEst = each.split('.') #Splitting by (.) to know if current file in iteration is PKL file, a directory or anything else
+
+        if os.path.isdir(os.path.join(directory,checkEst[0])): #Checking if it is directory
+            lists.extend(getListOfPKLs(os.path.join(directory,checkEst[0]), max_depth-1)) #If directory then calling same function recursively and subtracting 1 from depth
+        
+        if checkEst[-1] == loadingType: #If current file is a PKL file 
+            lists.append(os.path.join(directory,each)) #Appending PKL file to lists
+	return lists #Returning all PKL files
+
+
+
+def save_csv(data, filename, mode='w'):
+    """ 
+	@Author: Salman Ahmed
+	    
+	    data is a dataframe having rows in it to be appended or saved.
+	    filename is name of file where data should be saved.
+	    mode, if mode is w that means we are writing it first time
+	    if mode is a then it will append in already created file.
+    """
+    if mode == 'a': # Mode for appending Data 
+        data = data.values #Dataframe to Numpy Array
+        fields = data.tolist() #Numpy Array to Python List
+        with open(filename, 'a', newline='') as f: #Opening given filename to append in it
+            writer = csv.writer(f) #Initillizing writer to write in it
+            writer.writerows(fields) #Write all data in rows and append in already created CSV
+    elif mode == 'w': #Mode for creating file and saving it as filename
+		data.to_csv(filename, index = False) #Saving dataframe without index
+
+
+		
+
+
+
 
 def create_batch(file_paths,batch_size,file_index,starting_index):
     batch=[]
@@ -44,7 +100,7 @@ def main(directory= os.path.dirname(os.path.realpath(__file__)),save_type='csv',
     #get file path
     dir_path = os.path.dirname(os.path.realpath(__file__))
     #get paths of all the pkl files 
-    paths=get_pkl(directory = dir_path, max_depth=-1)
+    paths=get_pkl(directory = dir_path)
     #make generator that contains all the batches 
     batches=data_generator(paths,batch_size)
     file_name=1
