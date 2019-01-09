@@ -1,16 +1,18 @@
 import numpy as np
 import pandas as pd
 from collections import defaultdict
-def conv_to_pd_dataframe(Batch_Queues):
+def conv_to_pd_dataframe(Input_Batch_Queue, Output_Batch_Queue):
     #inuts: 
     #observation_list: list of file observations
     #output
     #pd dataframe  that has all rows appnded
     observations_list=True
-    Input_Batch_Queue=Batch_Queues[0]
-    Output_Batch_Queue=Batch_Queues[1]
-    while observations_list!=False:
+    while True:
+        print ('Running')
         observations_list=Input_Batch_Queue.get(block=True,timeout=None)
+        if (observations_list==False):
+            Output_Batch_Queue.put(False)
+            break
         keys=list(observations_list[0].keys())
         keys_set=set(keys)
         result_set=defaultdict(list)
@@ -24,4 +26,5 @@ def conv_to_pd_dataframe(Batch_Queues):
                     result_set[key].append(observation[key].tolist())
                 else:
                     result_set[key].append(observation[key])
+        print ('Pushing data')
         Output_Batch_Queue.put(pd.DataFrame(result_set))

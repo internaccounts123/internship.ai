@@ -3,23 +3,37 @@ import numpy as np
 import pandas as pd
 import csv
 import json
-
 class Data_Saver:
-    def __init__(self,filename):
+    def __init__(self,filename,save_type,out):
         self.current_rows=0
-        self.filename=filename
+        self.file_name=filename
+        self.save_type=save_type
+        self.output_dir=out
     def save(self,Q):
-        dataframe=Q.get(block=True,timeout=None)
-        if (self.filename[-4:]=='.csv'):
-            self.save_csv(dataframe)
-        elif(self.filename[-3:]=='.h5'):
-            self.save_h5(dataframe)
-        elif(self.filename[-4:]=='.npy'):
-            self.save_npy(dataframe)
+        import os
+        while True:
+            print('Running_SAVE')
+            self.filename=os.path.join(self.output_dir, str(self.file_name) + '.' + self.save_type)
+            dataframe=Q.get(True,None)
+            print ('Data_received')
+            if (type(dataframe) is bool):
+                print ('Broken')
+                break
+            if (self.filename[-4:]=='.csv'):
+                self.save_csv(dataframe)
+            elif(self.filename[-3:]=='.h5'):
+                self.save_h5(dataframe)
+            elif(self.filename[-4:]=='.npy'):
+                self.save_npy(dataframe)
+            self.file_name+=1
+            print ('saved')
     def save_h5(self,dataframe):
         dataframe['key']=pd.Series(np.arange(0,dataframe.shape[0],dtype=int))
+        print( self.filename)
         dataframe.to_hdf(self.filename,key='key')
+        print ('saved   ')
     def save_npy(self,dataframe):
+        dataframe['key'] = pd.Series(np.arange(0, dataframe.shape[0], dtype=int))
         array=dataframe.values
         np.save(self.filename,array)
         columns=list(dataframe.columns)
@@ -38,6 +52,7 @@ class Data_Saver:
             if mode is a then it will append in already created file.
         """
         filename=self.filename
+        dataframe['key'] = pd.Series(np.arange(0, dataframe.shape[0], dtype=int))
         if mode == 'a':  # Mode for appending Data
             data = data.values  # Dataframe to Numpy Array
             fields = data.tolist()  # Numpy Array to Python List
