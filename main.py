@@ -1,15 +1,22 @@
-#!/usr/bin/env python
-# coding: utf-8
-
-# In[ ]:
-
-
 import os
 import sys
-import pickle
-import numpy as np
-import pandas as pd
-from collections import defaultdict
+
+# import numpy as np
+# import pandas as pd
+# from collections import defaultdict
+from get_paths_recursive import get_pkl
+from generator import data_generator
+from convertor import conv_to_pd_dataframe
+from saver import Data_Saver
+
+
+
+
+
+
+
+
+
 
 
 
@@ -24,7 +31,7 @@ def main(output_dir= os.path.dirname(os.path.realpath(__file__)),save_type='h5',
     batch_size:  Number of examples in a batch
     dir_path:    The directory of input files
     
-    """"
+    """
     
     batch_size=int(batch_size)
     
@@ -56,5 +63,3 @@ if __name__=="__main__":
         main(sys.argv[1],sys.argv[2],sys.argv[3],sys.argv[4])
     else:
         main()
-
-

@@ -59,5 +59,3 @@ def data_generator(file_paths,batch_size):
         yield batch
         if file_index>=len(file_paths):  #all the files have been read and we will thus exit the generator
             break 
-        
-
