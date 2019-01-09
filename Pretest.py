@@ -7,7 +7,7 @@ import csv
 
 
 
-def get_pkl(directory = "", max_depth=-1, loadingType='.pkl'):
+def get_pkl(directory = "", max_depth=-1, loadingType='pkl'):
     """ 
 	@Author: Salman Ahmed
 
