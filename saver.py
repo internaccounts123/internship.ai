@@ -2,7 +2,7 @@
 import numpy as np
 import pandas as pd
 import csv
-
+import json
 
 class Data_Saver:
     def __init__(self,filename):
@@ -21,6 +21,12 @@ class Data_Saver:
     def save_npy(self,dataframe):
         array=dataframe.values
         np.save(self.filename,array)
+
+	columns=list(dataframe.columns)
+        column_dict={i:columns[i] for i in range(len(columns))}
+        with open('np_keys.json', 'w+') as fp:
+            json.dump(column_dict, fp)
+
 
     def save_csv(self, data, mode='w'):
         """
