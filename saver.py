@@ -8,7 +8,8 @@ class Data_Saver:
     def __init__(self,filename):
         self.current_rows=0
         self.filename=filename
-    def save(self,dataframe):
+    def save(self,Q):
+        dataframe=Q.get(block=True,timeout=None)
         if (self.filename[-4:]=='.csv'):
             self.save_csv(dataframe)
         elif(self.filename[-3:]=='.h5'):
@@ -21,8 +22,7 @@ class Data_Saver:
     def save_npy(self,dataframe):
         array=dataframe.values
         np.save(self.filename,array)
-
-	columns=list(dataframe.columns)
+        columns=list(dataframe.columns)
         column_dict={i:columns[i] for i in range(len(columns))}
         with open('np_keys.json', 'w+') as fp:
             json.dump(column_dict, fp)
