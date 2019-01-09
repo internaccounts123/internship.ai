@@ -27,13 +27,12 @@ def get_pkl(directory = "", max_depth=-1, loadingType='.pkl'):
         
         checkEst = each.split('.') #Splitting by (.) to know if current file in iteration is PKL file, a directory or anything else
 
-        if os.path.isdir(os.path.join(directory,checkEst[0])): #Checking if it is directory
-            lists.extend(getListOfPKLs(os.path.join(directory,checkEst[0]), max_depth-1)) #If directory then calling same function recursively and subtracting 1 from depth
+        if len(checkEst)==1 and  os.path.isdir(os.path.join(directory,checkEst[0])): #Checking if it is directory
+            lists.extend(get_pkl(os.path.join(directory,checkEst[0]), max_depth-1)) #If directory then calling same function recursively and subtracting 1 from depth
         
         if checkEst[-1] == loadingType: #If current file is a PKL file 
             lists.append(os.path.join(directory,each)) #Appending PKL file to lists
-     return lists #Returning all PKL files
-
+    return lists #Returning all PKL files
 
 
 def save_csv(data, filename, mode='w'):
