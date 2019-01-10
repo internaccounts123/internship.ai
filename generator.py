@@ -1,9 +1,3 @@
-#!/usr/bin/env python
-# coding: utf-8
-
-# In[ ]:
-
-
 import pickle
 
 def create_batch(file_paths,batch_size,file_index,starting_index):

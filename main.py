@@ -1,24 +1,10 @@
 import os
 import sys
 
-# import numpy as np
-# import pandas as pd
-# from collections import defaultdict
 from get_paths_recursive import get_pkl
 from generator import data_generator
 from convertor import conv_to_pd_dataframe
 from saver import Data_Saver
-
-
-
-
-
-
-
-
-
-
-
 
 def main(output_dir= os.path.dirname(os.path.realpath(__file__)),save_type='h5',batch_size=10000,dir_path=os.path.dirname(os.path.realpath(__file__))):
     
