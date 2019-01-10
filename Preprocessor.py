@@ -22,6 +22,9 @@ class preprocessor:
         
         self.batch_count+=1
         batch=self.remove_features(batch)
+        batch=batch.reindex(sorted(batch.columns), axis=1)
+        label_encoders=self.load_label_encoder()
+        batch=self.label_encode(label_encoders,batch)
         return batch
     
     
@@ -56,7 +59,7 @@ class preprocessor:
         
         #Load and return all label encoders
         label_encoders=[]
-        for feature in self.features:
+        for feature in ['action','lane_change_mode','previous_decision']:
             with open(self.dir_path+"/"+feature+".pkl", 'rb') as f:      
                 label_encoders.append(pickle.load(f)) 
         return label_encoders
