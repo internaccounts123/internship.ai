@@ -1,2 +1,0 @@
-The encoders(lane_change_mode.pkl,previous_decision.pkl and action.pkl) should be in the parent directory of our main file.
-This is done because otherwise while reading the input pkl files, the generator also reads these encoders and tries to iterate over them.
