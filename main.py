@@ -1,5 +1,6 @@
 import os
 import sys
+sys.path.insert(0, 'data_utils/')
 from get_paths_recursive import get_pkl
 from generator import data_generator
 from convertor import conv_to_pd_dataframe

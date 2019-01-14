@@ -1,2 +1,1 @@
-# internship.ai
-For the development of ai projects
+Implementation go Pipeline and Some Feature Engineering for processing in Model

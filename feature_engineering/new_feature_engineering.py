@@ -95,21 +95,25 @@ def find_features_using_obnet(ob_net,num_blocks_1_car, num_lanes=3):
     pressure_rear[:,0] = pressure_rear[:,0]/5.0
     pressure_rear[:,1] = pressure_rear[:,1]/5.0
     pressure_rear[:,2] = pressure_rear[:,2]/5.0
-    return pressure_front,num_cars_front,num_cars_rear, avg_speed,front_distances_all_lanes, rear_distances_all_lanes,lanes_closed_in_front,in_safe_net_front,front_closest_speed,rear_closest_speed
+    front_closest_speed_distance = front_closest_speed.copy()
+    front_closest_speed_distance[:,0] = front_closest_speed_distance[:,0]*front_distances_all_lanes[:,0]
+    front_closest_speed_distance[:,1] = front_closest_speed_distance[:,1]*front_distances_all_lanes[:,1]
+    front_closest_speed_distance[:,2] = front_closest_speed_distance[:,2]*front_distances_all_lanes[:,2]
+    return pressure_front,num_cars_front,num_cars_rear, avg_speed,front_distances_all_lanes, rear_distances_all_lanes,lanes_closed_in_front,in_safe_net_front,front_closest_speed,rear_closest_speed, front_closest_speed_distance
 
 
 
 def getFeaturesTraining(data):
     data.ob_net=data.ob_net.apply(lambda x: np.array(x))
     getFeatures = find_features_using_obnet(data.ob_net, 5)
-    pressure_front,num_cars_front,num_cars_rear, avg_speed,front_distances_all_lanes, rear_distances_all_lanes,lanes_closed_in_front,in_safe_net_front,front_closest_speed,rear_closest_speed = getFeatures
+    pressure_front,num_cars_front,num_cars_rear, avg_speed,front_distances_all_lanes, rear_distances_all_lanes,lanes_closed_in_front,in_safe_net_front,front_closest_speed,rear_closest_speed, front_closest_speed_distance = getFeatures
     speedgap = speedGap(data.speed_limit, data.speed)
     numericalColumns = ['speed_limit', 'speed', 'safe_net_front', 'previous_speed']
     maxvalue = maxValue(data[numericalColumns].values)
     minvalue = minValue(data[numericalColumns].values)
     avgvalue = avgValue(data[numericalColumns].values)
     sumvalue = sumValue(data[numericalColumns].values)
-    return np.column_stack([pressure_front,num_cars_front,num_cars_rear, avg_speed,front_distances_all_lanes, rear_distances_all_lanes,lanes_closed_in_front,in_safe_net_front,front_closest_speed,rear_closest_speed, speedgap, maxvalue, minvalue, avgvalue, sumvalue])
+    return np.column_stack([front_closest_speed_distance, pressure_front,num_cars_front,num_cars_rear, avg_speed,front_distances_all_lanes, rear_distances_all_lanes,lanes_closed_in_front,in_safe_net_front,front_closest_speed,rear_closest_speed, speedgap, maxvalue, minvalue, avgvalue, sumvalue])
     
     
     
