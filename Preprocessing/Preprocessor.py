@@ -16,7 +16,7 @@ class preprocessor:
         #dir_path gives us input data's path
         #we go to input directory's parent and read labelencoder pkl's over there
         self.batch_count=0
-        self.dir_path='/'.join(dir_path.split('/')[:-1])
+        self.dir_path=dir_path
     
     def process_batch(self,batch):
         

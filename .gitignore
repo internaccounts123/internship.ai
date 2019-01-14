@@ -1,0 +1,4 @@
+#ignoring data
+Data/
+
+__pycache__/
