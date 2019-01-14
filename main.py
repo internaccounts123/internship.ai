@@ -1,5 +1,6 @@
 import os
 import sys
+import numpy as np
 sys.path.insert(0, 'data_utils/')
 from get_paths_recursive import get_pkl
 from generator import data_generator
@@ -35,7 +36,8 @@ def main(output_dir= os.path.dirname(os.path.realpath(__file__)),save_type='h5',
 if __name__=="__main__":
     Input_Batch_Queue = Queue()
     Output_Batch_Queue = Queue()
-    p1 = Process(target=conv_to_pd_dataframe, args=(Input_Batch_Queue, Output_Batch_Queue))
+    columns = np.load("field_names.npy").tolist()
+    p1 = Process(target=conv_to_pd_dataframe, args=(Input_Batch_Queue, Output_Batch_Queue, columns))
     p1.start()
     #all these if's so that each argument can have a default value in main() 
     if len(sys.argv)==2:
