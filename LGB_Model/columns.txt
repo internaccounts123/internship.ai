@@ -1,0 +1,8 @@
+	cols = ['id', 'lane_change_mode']
+    k = 0
+    while k < 465:
+        cols.append("new_col"+str(k))
+        k+=1
+    cols.extend(['safe_net_front', 
+           'speed', 'speed_limit', 'profile', 'driver_type',
+           'previous_decision', 'previous_speed', 'observe_net_shape'])
