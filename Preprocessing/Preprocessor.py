@@ -75,9 +75,7 @@ class preprocessor:
                 if batch[column].dtype=='object':
                     batch[column]=label_encoders[label_encoder_index].transform(batch[column])
                     label_encoder_index+=1
-                #one hot previous decision
-                if column=='previous_decision':
-                    batch=pd.get_dummies(batch,columns=['previous_decision'],dtype=float)
+                
         for column in batch.columns:
             batch[column]=batch[column].astype(float)
         return batch

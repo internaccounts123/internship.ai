@@ -28,7 +28,6 @@ class Generator(keras.utils.Sequence):
                 if i[-4:] == '.csv':
                     array = pd.read_csv(os.path.join(self.DataDirectory, i))
                     array=self.P.process_batch(array)
-                    self.obsnet_col=array.columns=='ob_net'
                     self.action_col=array.columns=='action'
                     data_list.extend(array.values)
         elif format_ == 'h5':
@@ -36,7 +35,6 @@ class Generator(keras.utils.Sequence):
                 if i[-3:] == '.h5':
                     array = pd.read_hdf(os.path.join(self.DataDirectory, i))
                     array=self.P.process_batch(array)
-                    print (array.shape)
                     self.obsnet_col=array.columns=='ob_net'
                     self.action_col=array.columns=='action'
                     data_list.extend(array.values)
