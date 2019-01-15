@@ -6,6 +6,7 @@ import pandas as pd
 class Generator(keras.utils.Sequence):
     def __init__(self, config):
         self.config = config
+        self.actions_count=self.config['labels']
         self.DataDirectory = self.config['data_directory']
         self.DataFiles = np.array(glob.glob(self.DataDirectory+'/*'+self.config['format_']))
         self.Indexes_files = np.array(list(range(len(self.DataFiles))))
@@ -35,6 +36,7 @@ class Generator(keras.utils.Sequence):
                 if i[-3:] == '.h5':
                     array = pd.read_hdf(os.path.join(self.DataDirectory, i))
                     array=self.P.process_batch(array)
+                    print (array.shape)
                     self.obsnet_col=array.columns=='ob_net'
                     self.action_col=array.columns=='action'
                     data_list.extend(array.values)
@@ -63,11 +65,6 @@ class Generator(keras.utils.Sequence):
         pass
     def __getitem__(self, idx):
         data = self.load_data()
-        data1 = data[:,(~self.obsnet_col) & (~self.action_col)]
-        obsnet = data[:,self.obsnet_col]
+        data1 = data[:,(~self.action_col)]
         action=data[:,self.action_col]
-        list_obsnet=[]
-        for i in obsnet:
-            list_obsnet.append(np.array(i[0]).flatten())
-        obsnet=np.array(list_obsnet)
-        return np.c_[data1, obsnet],keras.utils.to_categorical(action,5)
+        return data1,keras.utils.to_categorical(action,self.actions_count)

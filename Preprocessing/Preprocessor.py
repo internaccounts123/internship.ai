@@ -1,5 +1,6 @@
 from sklearn import preprocessing
 import pickle
+import pandas as pd
 
 class preprocessor:
     
@@ -13,8 +14,6 @@ class preprocessor:
     def __init__(self,dir_path):
         
         #Batch count is used to calculate train test split
-        #dir_path gives us input data's path
-        #we go to input directory's parent and read labelencoder pkl's over there
         self.batch_count=0
         self.dir_path=dir_path
     
@@ -23,6 +22,7 @@ class preprocessor:
         self.batch_count+=1
         batch=self.remove_features(batch)
         batch=batch.reindex(columns=sorted(batch.columns))
+        batch[batch['previous_decision']=='Unknown'].previous_decision='Accelerate'
         label_encoders=self.load_label_encoder()
         batch=self.label_encode(label_encoders,batch)
         return batch
@@ -68,15 +68,18 @@ class preprocessor:
         
         #Use the label encoders on new batches
         label_encoder_index=0
-        for column in batch.columns:
+        columns=batch.columns
+        for column in columns:
             if column!='ob_net':
                 if batch[column].dtype=='object':
                     batch[column]=label_encoders[label_encoder_index].transform(batch[column])
                     label_encoder_index+=1
-
-                batch[column]=batch[column].astype(float)
+                #one hot previous decision
+                if column=='previous_decision':
+                    batch=pd.get_dummies(batch,columns=['previous_decision'],dtype=float)
+        for column in batch.columns:
+            batch[column]=batch[column].astype(float)
         return batch
     def train_test_split(self):
         #Return train test split batches with a ratio of 75:25 for train and test
         return int(self.batch_count*0.75),int(self.batch_count*0.25)
-
