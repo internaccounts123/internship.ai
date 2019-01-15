@@ -22,6 +22,7 @@ class preprocessor:
         self.batch_count+=1
         batch=self.remove_features(batch)
         batch=batch.reindex(columns=sorted(batch.columns))
+        batch[batch['action']=='Unknown'].action='Accelerate'
         batch[batch['previous_decision']=='Unknown'].previous_decision='Accelerate'
         label_encoders=self.load_label_encoder()
         batch=self.label_encode(label_encoders,batch)
@@ -83,3 +84,4 @@ class preprocessor:
     def train_test_split(self):
         #Return train test split batches with a ratio of 75:25 for train and test
         return int(self.batch_count*0.75),int(self.batch_count*0.25)
+
