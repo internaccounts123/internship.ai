@@ -1,28 +1,34 @@
-import numpy as np
+"""
+@version: 1.0
+@summary: get paths of files
+@Author: Salman Ahmed
+@date: 2019-01-09
+"""
+
 import os
 
 
-
-def get_pkl(directory = "", max_depth=-1, loadingType='.pkl'):
-    """ 
-	@Author: Salman Ahmed
-    	Recursively iterate over all nested directories and get paths of PKL files in directory and sub-directories.
-        directory is PATH from where it will get all paths.
-        max_depth is depth limit given as argument to how much deep we want to go.
-        max_depth = -1 means till end.
+def get_file_paths(directory=".", max_depth=-1, file_ext='pkl'):
     """
-    lists = [] #List containing all paths 
-    if max_depth==0: #Terminating condition for depth
-        return []
-    
-    lstDir = os.listdir(directory) #Getting all files and directories in given directory
-    for each in lstDir: #Iterating over each file or directory in list
-        
-        checkEst = each.split('.') #Splitting by (.) to know if current file in iteration is PKL file, a directory or anything else
+    Recursively iterate over all nested directories and get paths of PKL files in directory and sub-directories.
+    directory is PATH from where it will get all paths.
+    max_depth is depth limit given as argument to how much deep we want to go.
+    :param directory: directory to search for pkl file
+    :param max_depth: num of sub directory  of current directory to search
+    :param file_ext: ext of file
+    :return:
+    """
 
-        if len(checkEst)==1 and  os.path.isdir(os.path.join(directory,checkEst[0])): #Checking if it is directory
-            lists.extend(get_pkl(os.path.join(directory,checkEst[0]), max_depth-1)) #If directory then calling same function recursively and subtracting 1 from depth
-        
-        if checkEst[-1] == "pkl" or checkEst[-1] == "PKL": #If current file is a PKL file 
-            lists.append(os.path.join(directory,each)) #Appending PKL file to lists
-    return lists #Returning all PKL files
+    if max_depth == 0:  # terminating condition for recursive function
+        return []
+
+    pkl_paths = []  # contains paths of all pkl files
+    dirs = os.listdir(directory)  # get all files and directories in given directory
+
+    for dir_ in dirs:  # iterate over files or directories in list
+        if '.' not in dir_:  # a directory
+            pkl_paths.extend(get_file_paths(directory=os.path.join(directory, dir_),
+                                                  max_depth=max_depth - 1, file_ext=file_ext))
+        elif file_ext in dir_:  # a pkl file
+            pkl_paths.append(os.path.join(directory, dir_))  # appending pkl file to lists
+    return pkl_paths
