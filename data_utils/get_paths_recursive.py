@@ -22,13 +22,13 @@ def get_file_paths(directory=".", max_depth=-1, file_ext='pkl'):
     if max_depth == 0:  # terminating condition for recursive function
         return []
 
-    pkl_paths = []  # contains paths of all pkl files
+    file_paths = []  # contains paths of all pkl files
     dirs = os.listdir(directory)  # get all files and directories in given directory
 
     for dir_ in dirs:  # iterate over files or directories in list
         if '.' not in dir_:  # a directory
-            pkl_paths.extend(get_file_paths(directory=os.path.join(directory, dir_),
+            file_paths.extend(get_file_paths(directory=os.path.join(directory, dir_),
                                             max_depth=max_depth - 1, file_ext=file_ext))
         elif file_ext in dir_:  # a pkl file
-            pkl_paths.append(os.path.join(directory, dir_))  # appending pkl file to lists
-    return pkl_paths
+            file_paths.append(os.path.join(directory, dir_))  # appending pkl file to lists
+    return file_paths
