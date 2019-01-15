@@ -1,0 +1,9 @@
+#ignoring data
+Data/
+
+__pycache__/
+#ignoring logs
+logs/
+
+#ignoring checkpoints
+checkpoints/
