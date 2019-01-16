@@ -28,7 +28,7 @@ class Base_Model():
         raise Exception('Unimplemented Error ')
     
         
-    def train(self,generator,logdir="../../logs",checkpoint_dir="../../checkpoints",save_N_epochs=10):
+    def train(self,generator,epochs=10,logdir="../../logs",checkpoint_dir="../../checkpoints",save_N_epochs=10):
         """
         
         """
@@ -37,7 +37,7 @@ class Base_Model():
         
         self.Model.fit_generator(generator= generator, 
                     steps_per_epoch  = len(generator), 
-                    epochs           = self.config['epochs'], 
+                    epochs           = epochs, 
                     verbose          = 1,
                     max_queue_size   = 3,
                                 callbacks=[tensorboard,checkpoint])
