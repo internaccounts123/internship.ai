@@ -21,9 +21,8 @@ class preprocessor:
         
         self.batch_count+=1
         batch=self.remove_features(batch)
-        batch=batch.reindex(columns=sorted(batch.columns))
-        batch[batch['action']=='Unknown'].action='Accelerate'
-        batch[batch['previous_decision']=='Unknown'].previous_decision='Accelerate'
+        batch.loc[batch['action']=='Unknown','action']='Accelerate'
+        batch.loc[batch['previous_decision']=='Unknown','previous_decision']='Accelerate'
         label_encoders=self.load_label_encoder()
         batch=self.label_encode(label_encoders,batch)
         return batch
@@ -69,12 +68,9 @@ class preprocessor:
         
         #Use the label encoders on new batches
         label_encoder_index=0
-        columns=batch.columns
-        for column in columns:
-            if column!='ob_net':
-                if batch[column].dtype=='object':
-                    batch[column]=label_encoders[label_encoder_index].transform(batch[column])
-                    label_encoder_index+=1
+        for column in ['action','lane_change_mode','previous_decision']:
+            batch[column]=label_encoders[label_encoder_index].transform(batch[column])
+            label_encoder_index+=1
                 
         for column in batch.columns:
             batch[column]=batch[column].astype(float)
