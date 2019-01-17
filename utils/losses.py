@@ -23,18 +23,17 @@ def f1_score_metric(num_actions):
     def f1_calc(y,x):
         F1_list=[]
         pred_labels=tf.argmax(x,axis=1,output_type=tf.int32)
+        target_labels=tf.argmax(y,axis=1,output_type=tf.int32)
         y=tf.cast(y,tf.int32)
         for i in range(num_actions):
-            one_hot=np.zeros((num_actions))
-            one_hot[i]=1
-            targets=tf.cast(tf.equal(y,tf.constant(one_hot,dtype=tf.int32)),tf.float32)
-            targets=tf.reduce_sum(targets,axis=1)
-            preds=tf.cast(tf.equal(pred_labels,tf.constant(i,dtype=tf.int32)),tf.float32)
+            action=tf.constant(i,dtype=tf.int32)
+            targets=tf.cast(tf.equal(target_labels,action),tf.float32)
+            preds=tf.cast(tf.equal(pred_labels,action),tf.float32)
             
             TP = tf.count_nonzero(preds * targets,dtype=tf.float32)
-            TN = tf.count_nonzero((preds - 1) * (targets - 1),dtype=tf.float32)
-            FP = tf.count_nonzero(preds * (targets - 1),dtype=tf.float32)
-            FN = tf.count_nonzero((preds - 1) * targets,dtype=tf.float32)
+            TN = tf.count_nonzero((1-preds) * (1-targets),dtype=tf.float32)
+            FP = tf.count_nonzero(preds * (1-targets),dtype=tf.float32)
+            FN = tf.count_nonzero((1-preds) * targets,dtype=tf.float32)
             
             error=1e-6
             Pr=(TP)/(TP+FP+error)
