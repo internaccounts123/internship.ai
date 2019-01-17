@@ -28,7 +28,7 @@ class Base_Model():
         raise Exception('Unimplemented Error ')
     
         
-    def train(self,generator,epochs=10,logdir="../../logs",checkpoint_dir="../../checkpoints",save_N_epochs=10):
+    def train_generator(self,generator,epochs=10,logdir="../../logs",checkpoint_dir="../../checkpoints",save_N_epochs=10):
         """
         
         """
@@ -41,6 +41,22 @@ class Base_Model():
                     verbose          = 1,
                     max_queue_size   = 3,
                                 callbacks=[tensorboard,checkpoint])
+
+    def train(self,traindataX,traindataY,valdataX,valdataY,epochs=10,logdir="../../logs",
+              checkpoint_dir="../../checkpoints",save_N_epochs=10):
+        """
+        
+        """
+        tensorboard=get_tensorboard_callback(logdir=logdir+"/"+self.prefix)
+        checkpoint=get_checkpoint_call_back(checkpoint_dir,self.prefix+"_chkpoint_",period=save_N_epochs)
+        
+        self.Model.fit(x=traindataX,
+                       y=traindataY,
+                       validation_data=(valdataX,valdataY),
+                    batch_size  = 64,
+                    epochs           = epochs, 
+                    verbose          = 1,
+                    callbacks=[tensorboard,checkpoint])
         
     def predict(self,observation):
         """
