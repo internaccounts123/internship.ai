@@ -14,7 +14,7 @@ def get_tensorboard_callback(logdir='../logs/fc_net'):
     return TensorBoard(log_dir=logdir,
                           write_graph=True)
 
-def get_checkpoint_call_back(checkpoint_dir="../checkpoints",prefix="fc_net_chkpoint",period=10):
+def get_checkpoint_call_back(checkpoint_dir="../checkpoints",prefix="fc_net_chkpoint",period=1):
     """
     Params:
         checkpoint dir : the directory where to save the checkpoints
@@ -24,6 +24,6 @@ def get_checkpoint_call_back(checkpoint_dir="../checkpoints",prefix="fc_net_chkp
     """
     path=checkpoint_dir+"/"+prefix+"_{epoch:02d}.hdf5"
     checkpoint=ModelCheckpoint(path, monitor='loss',
-                                   verbose=1, save_best_only=False, save_weights_only=False, mode='auto', period=period)
+                                   verbose=1, save_best_only=True, save_weights_only=False, mode='auto', period=period)
     return checkpoint
         
