@@ -1,7 +1,7 @@
 import pickle
 
 
-def create_batch(file_paths,batch_size,file_index,starting_index):
+def create_batch(file_paths, batch_size, file_index, starting_index):
     
     """
     Creates a single batch and passes it to data generator function
