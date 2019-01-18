@@ -1,5 +1,6 @@
 #ignoring data
 Data/
+NewData/
 
 __pycache__/
 #ignoring logs

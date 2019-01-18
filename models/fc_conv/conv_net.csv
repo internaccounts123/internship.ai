@@ -1,8 +1,11 @@
 ,layer_type,units,strides,padding,kernel_size,num_filters
-0,conv,,1,same,3,64
+0,conv,,1,same,3,32
 ,bn,,,,,
 ,relu,,,,,
-,conv,,1,same,1,128
+,conv,,1,valid,2,16
+,bn,,,,,
+,relu,,,,,
+,conv,,1,same,1,8
 ,bn,,,,,
 ,relu,,,,,
 ,flatten,,,,,
