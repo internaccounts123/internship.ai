@@ -4,6 +4,7 @@ from keras.layers import Input
 from keras.models import Model
 import numpy as np
 
+
 class DNN:
     """
     Class to construct Fully Connected Deep Networks
@@ -17,8 +18,8 @@ class DNN:
         self.layer_shapes = config['layer_shapes']
         self.activation = config['Activation']
         self.output = config['Output']
-        self.weights=config['Weights']
-        self.model=self.construct_fc_model()
+        self.weights = config['Weights']
+        self.model = self.construct_fc_model()
         if self.weights:
             self.load_weights()
 
@@ -41,8 +42,8 @@ class DNN:
         """
         self.model.load_weights(self.weights)
 
-    def predict(self, input):
+    def predict(self, input_example):
         """
         Returns the predicted label
         """
-        return self.model.predict(np.atleast_2d(input))
+        return self.model.predict(np.atleast_2d(input_example))
