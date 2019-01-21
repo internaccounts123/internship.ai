@@ -41,7 +41,6 @@ class Data_Saver:
         with open('np_keys.json', 'w+') as fp:
             json.dump(column_dict, fp)
 
-
     def save_csv(self, data, mode='w'):
         """
         @Author: Salman Ahmed
@@ -51,7 +50,7 @@ class Data_Saver:
             mode, if mode is w that means we are writing it first time
             if mode is a then it will append in already created file.
         """
-        filename=self.filename
+        filename = self.filename
         dataframe['key'] = pd.Series(np.arange(0, dataframe.shape[0], dtype=int))
         if mode == 'a':  # Mode for appending Data
             data = data.values  # Dataframe to Numpy Array

@@ -7,6 +7,17 @@ from sklearn.metrics import f1_score
 import lightgbm as lgb
 import numpy as np
 import gc
+from sklearn.metrics import accuracy_score, recall_score, precision_score, confusion_matrix
+from sklearn.model_selection import StratifiedKFold
+from sklearn.metrics import f1_score
+import lightgbm as lgb
+
+
+"""
+    Author:
+    Salman Ahmed
+"""
+
 
 def get_data(no_file=1):
     paths = os.listdir(os.path.curdir)
@@ -16,34 +27,27 @@ def get_data(no_file=1):
         if data.shape[0] >= no_file:
             break
         n_path = os.path.join(os.path.curdir, each)
-        try:
-            temp = pd.read_hdf(n_path)
-            temp.pop('id')
-            temp.pop('profile')
-            temp.pop('observe_net_shape')
-            temp.pop('key')
-            temp.speed = temp.speed*3.6
-            temp.speed_limit = temp.speed_limit*3.6
-            temp = temp[temp.driver_type=='Rule']
-            temp = temp[temp.action!='AbortLaneChange']
-            if temp.shape[0]>0:
-                temp.pop('driver_type')
-                data = pd.concat([data,temp])
-        except:
-            print (each)
+        temp = pd.read_hdf(n_path)
+        temp.pop('id')
+        temp.pop('profile')
+        temp.pop('observe_net_shape')
+        temp.pop('key')
+        temp.speed = temp.speed*3.6
+        temp.speed_limit = temp.speed_limit*3.6
+        temp = temp[temp.driver_type=='Rule']
+        temp = temp[temp.action!='AbortLaneChange']
+        if temp.shape[0]>0:
+            temp.pop('driver_type')
+            data = pd.concat([data,temp])
     return data
+
 
 data = get_data(1000000)
 
 data['previous_decision'] = data['previous_decision'].astype('category')
 data['action'] = data['action'].astype('category')
 data['lane_change_mode'] = data['lane_change_mode'].astype('category')
-data.shape
 
-from sklearn.metrics import accuracy_score, recall_score, precision_score, confusion_matrix
-from sklearn.model_selection import StratifiedKFold
-from sklearn.metrics import f1_score
-import lightgbm as lgb
 model_params1 = {
             'device': 'cpu', 
         "boosting_type": "gbdt", 
@@ -71,6 +75,7 @@ model_params1 = {
         "silent": True,
     }
 
+
 def modeling_cross_validation(params, X, y, nr_folds=5):
     clfs = list()
     tempk = 0
@@ -96,26 +101,21 @@ def modeling_cross_validation(params, X, y, nr_folds=5):
         prescore = precision_score(y_valid, model.predict(X_valid), average='weighted')
         score = fscore
         confMat = confusion_matrix(y_valid, model.predict(X_valid))
-        print ("Accuracy ", accscore)
-        print ("Recall ", recscore)
-        print ("Precision ", prescore)
-        print ("Confusion Matrix ")
-        print (confMat)        
-        tempk+=1
+        print("Accuracy ", accscore)
+        print("Recall ", recscore)
+        print("Precision ", prescore)
+        print("Confusion Matrix ")
+        print(confMat)
+        tempk += 1
     return clfs
 
+
 y = data.pop('action')
-
 y = pd.factorize(y)[0]
-
-data.head()
-
 y = pd.DataFrame(y)
-
 clfs = modeling_cross_validation(model_params1, data, y)
-
 k = 0
 for each in clfs:
     joblib.dump(each, "LGB_"+str(k))
-    k+=1
+    k += 1
 
