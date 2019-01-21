@@ -11,7 +11,7 @@ class Generator(keras.utils.Sequence):
     def __init__(self, config):
         """
 
-        :param config:Network configurations
+        :param config:Generator configurations
         """
         self.config = config
         self.actions_count=self.config['labels']
