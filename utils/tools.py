@@ -15,7 +15,7 @@ def construct_model_from_csv(model_file,input_placeholder):
         x=input_placeholder
         for i in range(model_df.shape[0]):
             layer_type=model_df.layer_type[i]
-            assert layer_type in ["conv","fc","flatten","relu","bn","pooling"],"invalid layer type"
+            assert layer_type in ["conv","conv1D","fc","flatten","relu","bn","pooling"],"invalid layer type"
             
             if layer_type=="conv":
                 padding=str(model_df.padding[i])
@@ -28,7 +28,20 @@ def construct_model_from_csv(model_file,input_placeholder):
                 assert num_filters>0
                 assert strides>0
                 
-                x=L.Conv2D(num_filters,kernel_size=3,strides=strides,padding=padding)(x)
+                x=L.Conv2D(num_filters,kernel_size=kernel_size,strides=strides,padding=padding)(x)
+
+            if layer_type == "conv1D":
+                padding = str(model_df.padding[i])
+                kernel_size = int(model_df.kernel_size[i])
+                num_filters = int(model_df.num_filters[i])
+                strides = int(model_df.strides[i])
+
+                assert padding == "same" or padding == "valid"
+                assert kernel_size > 0
+                assert num_filters > 0
+                assert strides > 0
+
+                x = L.Conv1D(num_filters, kernel_size=kernel_size, strides=strides, padding=padding)(x)
                 
             elif layer_type=="fc":
                 hidden_units=int(model_df.units[i])
