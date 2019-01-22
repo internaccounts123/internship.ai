@@ -116,6 +116,7 @@
     <option name="y" value="47" />
     <option name="width" value="1283" />
     <option name="height" value="701" />
+
   </component>
   <component name="ProjectView">
     <navigator proportions="" version="1">
@@ -153,6 +154,7 @@
     </panes>
   </component>
   <component name="PropertiesComponent">
+    <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$" />
   </component>
   <component name="RunDashboard">
