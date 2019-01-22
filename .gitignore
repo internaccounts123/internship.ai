@@ -1,7 +1,9 @@
 #ignoring data
 Data/
+NewData/
 
 __pycache__/
+.idea/
 #ignoring logs
 logs/
 
