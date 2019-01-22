@@ -22,11 +22,15 @@ class Generator(keras.utils.Sequence):
         self.DataFiles = np.array(glob.glob(self.DataDirectory+'/*'+self.config['format_']))
         self.Indexes_files = np.array(list(range(len(self.DataFiles))))
         self.P=self.config['Preprocessor']
+        self.return_normalized_values=self.config.get("normalize",True)
         self.action_col=config['action_col']
         self.Data_selected=[]
         self.i_e = 0
         self.i_f = 0
-
+    def load_from_file(self):
+        self.Data_selected=np.load(self.config['filepath'])
+        self.indexes_examples = np.arange(0, len(self.Data_selected), dtype=np.int32)
+        np.random.shuffle(self.indexes_examples)
     def fill_buffer(self):
         """
         Load files,sample data from them and assigns it to self.Data_selected
@@ -105,8 +109,13 @@ class Generator(keras.utils.Sequence):
         :return: Normalized array
         """
         return (data-self.mean)/self.std
+
     def __getitem__(self, idx):
         data = self.load_data()
         data1 = data[:,(~self.action_col)]
         action=data[:,self.action_col]
-        return self.normalize(data1),keras.utils.to_categorical(action,self.actions_count)
+        if self.return_normalized_values:
+
+            return self.normalize(data1),keras.utils.to_categorical(action,self.actions_count)
+        else:
+            return data1,keras.utils.to_categorical(action,self.actions_count)

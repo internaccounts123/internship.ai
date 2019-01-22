@@ -19,6 +19,7 @@ class Generator(keras.utils.Sequence):
         self.DataFiles = np.array(glob.glob(self.DataDirectory+'/*'+self.config['format_']))
         self.Indexes_files = np.array(list(range(len(self.DataFiles))))
         self.P=self.config['Preprocessor']
+        self.return_normalized_values=self.config.get("normalize",True)
         self.action_col=config['action_col']
         self.Data = Queue()
         self.Data_selected=[]
@@ -33,7 +34,11 @@ class Generator(keras.utils.Sequence):
         """
         files_batch_size = self.config['file_batch_size']
         files=self.DataFiles[self.Indexes_files[self.i_f:self.i_f+files_batch_size]]
-        self.Data.put(self.load_files(files, self.config['format_']))
+        self.Data_selected=self.load_files(files, self.config['format_'])
+        self.indexes_examples = np.arange(0,len(self.Data_selected),dtype= np.int32)
+        np.random.shuffle(self.indexes_examples)
+        self.mean=np.mean(self.Data_selected[:,(~self.action_col)],axis=0)
+        self.std=np.std(self.Data_selected[:,(~self.action_col)],axis=0)+1e-10
         self.i_f += files_batch_size
 
     def load_files(self, files, format_):
@@ -52,13 +57,15 @@ class Generator(keras.utils.Sequence):
                     self.action_col=array.columns=='action'
                     data_list.extend(array.values)
         elif format_ == 'h5':
-            for i in files:
+            for count,i in enumerate(files):
                 if i[-3:] == '.h5':
+                    print ('File No:',count)
                     array = pd.read_hdf(os.path.join(self.DataDirectory, i))
                     array=self.P.process_batch(array)
-                    self.obsnet_col=array.columns=='ob_net'
                     self.action_col=array.columns=='action'
+
                     data_list.extend(array.values)
+
         return np.array(data_list)
     def generate(self):
         """
@@ -72,6 +79,7 @@ class Generator(keras.utils.Sequence):
                 np.random.shuffle(self.Indexes_files)
                 self.i_f = 0
             self.fill_buffer()
+            break
     def load_data(self):
         """
         Fetch data from multiprocessing queue
@@ -79,7 +87,6 @@ class Generator(keras.utils.Sequence):
         """
         self.examples_batch_size = self.config['ex_batch_size']
         if self.i_e >= len(self.Data_selected):
-            self.Data_selected=self.Data.get(block=True,timeout=None)
             self.indexes_examples = np.arange(0,len(self.Data_selected),dtype= np.int32)
             np.random.shuffle(self.indexes_examples)
             self.i_e = 0
@@ -87,13 +94,17 @@ class Generator(keras.utils.Sequence):
         self.i_e += self.examples_batch_size
         return res
     def __len__(self):
+
         """
 
         :return:  Total mini batches in an epoch
         """
         return (len(self.DataFiles)*self.config['file_examples'])//self.config['ex_batch_size']
+
     def on_epoch_end(self):
         pass
+    def normalize(self,data):
+        return (data-self.mean)/self.std
     def __getitem__(self, idx):
         """
 
@@ -103,4 +114,7 @@ class Generator(keras.utils.Sequence):
         data = self.load_data()
         data1 = data[:,(~self.action_col)]
         action=data[:,self.action_col]
-        return data1,keras.utils.to_categorical(action,self.actions_count)
+        if self.return_normalized_values:
+            return self.normalize(data1),keras.utils.to_categorical(action,self.actions_count)
+        else:
+            return data1,keras.utils.to_categorical(action,self.actions_count)
