@@ -31,7 +31,7 @@ class Preprocessor:
     def remove_features(batch):
         
         # Remove unwanted features
-        batch = batch.drop(['observe_net_shape', 'profile', 'driver_type'], axis=1)
+        batch = batch.drop(['id', 'observe_net_shape', 'profile', 'driver_type'], axis=1)
         if 'key' in batch.columns:
             batch = batch.drop(['key'], axis=1)
         return batch
