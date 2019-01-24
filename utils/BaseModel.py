@@ -47,14 +47,13 @@ class BaseModel:
                                  max_queue_size=3,
                                  callbacks=[tensorboard, checkpoint])
 
-    def train(self, train_data_x, train_data_y, val_data_x, val_data_y, epochs=10, log_dir="../../logs",
-              checkpoint_dir="../../checkpoints", save_n_epochs=10):
+    def train(self, train_data_x, train_data_y, val_data, epochs=10, log_dir="../../logs",
+              checkpoint_dir="../../checkpoints", save_n_epochs=10,batch_size=64,current_step=0):
         """
 
         :param train_data_x: list of training inputs ,shape of each input=(numexamples,numfeatures)
         :param train_data_y: list of training outputs
-        :param val_data_x: list of validation inputs ,shape of each input=(numexamples,numfeatures)
-        :param val_data_y: list of validations outputs
+        :param val_data: list of validation inputs and targets ,shape of each input=(numexamples,numfeatures)
         :param epochs:  num of epochs
         :param log_dir:  directory where to place logs
         :param checkpoint_dir: directory in which to save checkpoints
@@ -66,10 +65,11 @@ class BaseModel:
         
         self.Model.fit(x=train_data_x,
                        y=train_data_y,
-                       validation_data=(val_data_x, val_data_y),
+                       validation_data=val_data,
                        batch_size=64,
                        epochs=epochs,
                        verbose=1,
+                       initial_epoch=current_step,
                        callbacks=[tensorboard,checkpoint])
         
     def predict(self, observation):

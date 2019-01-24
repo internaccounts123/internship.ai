@@ -15,7 +15,8 @@ def construct_model_from_csv(model_file, input_placeholder):
         x=input_placeholder
         for i in range(model_df.shape[0]):
             layer_type=model_df.layer_type[i]
-            assert layer_type in ["conv", "conv1D", "fc", "flatten", "relu", "bn", "pooling"], "invalid layer type"
+            assert layer_type in ["conv", "conv1D", "fc", "flatten", "relu","elu", "bn", "pooling"],\
+                "invalid layer type"
             
             if layer_type == "conv":
                 padding=str(model_df.padding[i])
@@ -53,6 +54,9 @@ def construct_model_from_csv(model_file, input_placeholder):
                 
             elif layer_type == "relu":
                 x = layers.Activation("relu")(x)
+                
+            elif layer_type == "elu":
+                x = layers.Activation("elu")(x)
                 
             elif layer_type == "bn":
                 x = layers.BatchNormalization()(x)
