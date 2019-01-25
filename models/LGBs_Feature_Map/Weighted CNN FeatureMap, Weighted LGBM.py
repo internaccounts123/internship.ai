@@ -3,6 +3,12 @@ import os
 import numpy as np
 import gc
 
+
+"""
+	Author: Salman Ahmed
+"""
+
+
 SHAPE = 8000
 def load_data(path):
     try:

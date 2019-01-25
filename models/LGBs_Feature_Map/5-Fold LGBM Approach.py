@@ -8,6 +8,12 @@ import lightgbm as lgb
 import numpy as np
 import gc
 
+
+"""
+	Author: Salman Ahmed
+
+"""
+
 def get_data(no_file=1):
     paths = os.listdir(os.path.curdir)
     data = pd.DataFrame()
