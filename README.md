@@ -1,1 +1,1 @@
-Implementation go Pipeline and Some Feature Engineering for processing in Model
+Supervised learning, synthetic data generation through GANs and DQN for autonomous driving.

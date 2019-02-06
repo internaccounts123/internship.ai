@@ -1,0 +1,7 @@
+,layer_type,units,strides,padding,kernel_size,num_filters
+,fc,256,,,,
+,bn,,,,,
+,relu,,,,,
+,fc,128,,,,
+,bn,,,,,
+,relu,,,,,
